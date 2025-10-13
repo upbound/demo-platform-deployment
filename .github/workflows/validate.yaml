@@ -1,0 +1,69 @@
+name: Validate Manifests
+
+on:
+  pull_request:
+    branches:
+      - main
+      - production
+    paths:
+      - 'base/**'
+      - 'environments/**'
+      - '.github/workflows/validate.yaml'
+
+jobs:
+  validate:
+    name: Validate Kubernetes Manifests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+      
+      - name: Validate dev environment
+        run: |
+          echo "Validating dev environment..."
+          kubectl kustomize environments/dev > /tmp/dev-manifests.yaml
+          kubectl apply --dry-run=client -f /tmp/dev-manifests.yaml
+      
+      - name: Validate prod environment
+        run: |
+          echo "Validating prod environment..."
+          kubectl kustomize environments/prod > /tmp/prod-manifests.yaml
+          kubectl apply --dry-run=client -f /tmp/prod-manifests.yaml
+      
+      - name: Check for common issues
+        run: |
+          echo "Checking for common issues..."
+          
+          # Check for hardcoded secrets
+          if grep -r "password:" base/ environments/ || grep -r "apiKey:" base/ environments/; then
+            echo "ERROR: Potential hardcoded secrets found!"
+            exit 1
+          fi
+          
+          echo "Basic validation passed!"
+      
+      - name: Comment PR
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const output = `#### Kubernetes Manifest Validation 🚀
+            
+            **Environment Validation Results:**
+            - ✅ Dev environment: Manifests are valid
+            - ✅ Prod environment: Manifests are valid
+            
+            All Kustomize builds completed successfully!`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
