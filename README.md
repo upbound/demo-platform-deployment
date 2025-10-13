@@ -18,11 +18,14 @@ This repository contains Kubernetes manifests for deploying the Demo Platform to
 │   ├── service.yaml
 │   ├── namespace.yaml
 │   └── kustomization.yaml
-└── environments/              # Environment-specific overlays
-    ├── dev/                   # Development environment
-    │   └── kustomization.yaml
-    └── prod/                  # Production environment
-        └── kustomization.yaml
+├── environments/              # Environment-specific overlays
+│   ├── dev/                   # Development environment
+│   │   └── kustomization.yaml
+│   └── prod/                  # Production environment
+│       └── kustomization.yaml
+└── scripts/                   # Utility scripts
+    ├── create-production-branch.sh
+    └── validate-manifests.sh
 ```
 
 ## GitOps Workflow
@@ -60,15 +63,26 @@ kubectl apply -f argocd/dev-application.yaml -n argocd
 kubectl apply -f argocd/prod-application.yaml -n argocd
 ```
 
+### Creating the Production Branch
+
+Use the provided script to create the production branch:
+
+```bash
+./scripts/create-production-branch.sh
+```
+
+This will create and optionally push the production branch from main.
+
 ### Testing Manifests Locally
 
 You can test the manifests locally using kustomize:
 
 ```bash
-# Test dev environment
-kubectl kustomize environments/dev
+# Use the validation script (recommended)
+./scripts/validate-manifests.sh
 
-# Test prod environment
+# Or manually test environments
+kubectl kustomize environments/dev
 kubectl kustomize environments/prod
 
 # Apply to a cluster (for testing)
