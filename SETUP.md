@@ -27,7 +27,8 @@ Apply the ArgoCD application definitions to your ArgoCD instance(s):
 #### For Development Cluster
 
 ```bash
-kubectl apply -f argocd/dev-application.yaml -n argocd
+# From main branch
+kubectl apply -f argocd/application.yaml -n argocd
 ```
 
 This application will:
@@ -38,7 +39,9 @@ This application will:
 #### For Production Cluster
 
 ```bash
-kubectl apply -f argocd/prod-application.yaml -n argocd
+# Switch to production branch first
+git checkout production
+kubectl apply -f argocd/application.yaml -n argocd
 ```
 
 This application will:
@@ -46,9 +49,11 @@ This application will:
 - Deploy manifests from the repository root
 - Automatically sync changes
 
+**Note:** Each branch contains only its own ArgoCD application definition.
+
 ### 3. Update ArgoCD Application Configuration (if needed)
 
-If you're using external clusters, update the `destination.server` field in the ArgoCD application files:
+If you're using external clusters, update the `destination.server` field in the ArgoCD application file (`argocd/application.yaml`):
 
 ```yaml
 destination:

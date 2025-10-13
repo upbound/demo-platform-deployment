@@ -65,7 +65,7 @@ git checkout -b production
 
 # Update kustomization.yaml for production settings
 echo ""
-echo "Updating kustomization.yaml for production environment..."
+echo "Updating configuration for production environment..."
 cat > kustomization.yaml << 'EOF'
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -86,8 +86,32 @@ replicas:
   count: 3
 EOF
 
-git add kustomization.yaml
-git commit -m "Update kustomization for production environment"
+# Update ArgoCD application for production
+cat > argocd/application.yaml << 'EOF'
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-platform-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/upbound/demo-platform-deployment
+    targetRevision: production
+    path: .
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: demo-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
+
+git add kustomization.yaml argocd/application.yaml
+git commit -m "Update configuration for production environment"
 
 echo ""
 echo "Branch created successfully!"

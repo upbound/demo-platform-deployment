@@ -62,8 +62,8 @@ kubectl config use-context <dev-cluster-context>
 # Verify ArgoCD is installed
 kubectl get pods -n argocd
 
-# Apply the dev application
-kubectl apply -f argocd/dev-application.yaml -n argocd
+# Apply the dev application (from main branch)
+kubectl apply -f argocd/application.yaml -n argocd
 
 # Verify the application was created
 kubectl get application demo-platform-dev -n argocd
@@ -83,8 +83,11 @@ kubectl config use-context <prod-cluster-context>
 # Verify ArgoCD is installed
 kubectl get pods -n argocd
 
+# Switch to production branch
+git checkout production
+
 # Apply the prod application
-kubectl apply -f argocd/prod-application.yaml -n argocd
+kubectl apply -f argocd/application.yaml -n argocd
 
 # Verify the application was created
 kubectl get application demo-platform-prod -n argocd
@@ -95,10 +98,10 @@ argocd app get demo-platform-prod
 
 ## 5. Update ArgoCD Application Configurations (If Using External Clusters)
 
-If your production cluster is different from where ArgoCD is running, you'll need to update the destination in the ArgoCD application files:
+If your production cluster is different from where ArgoCD is running, you'll need to update the destination in the ArgoCD application file:
 
 ```yaml
-# In argocd/prod-application.yaml
+# In argocd/application.yaml (on production branch)
 destination:
   # Option 1: Use cluster server URL
   server: https://your-production-cluster-api-server

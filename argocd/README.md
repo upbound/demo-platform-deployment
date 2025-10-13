@@ -1,28 +1,32 @@
-# ArgoCD Application Definitions
+# ArgoCD Application Definition
 
-This directory contains ArgoCD Application manifests for deploying to different environments.
+This directory contains the ArgoCD Application manifest for this environment.
 
-## Applications
+## Application
 
-### Development (`dev-application.yaml`)
+### Development Environment (`application.yaml`)
 - Watches `main` branch
 - Deploys to dev cluster
 - Path: `.` (repository root)
 
-### Production (`prod-application.yaml`)
-- Watches `production` branch
-- Deploys to production cluster
-- Path: `.` (repository root)
+**Note:** The `production` branch contains its own `application.yaml` configured for the production environment.
 
 ## Installation
 
-Apply these manifests to your ArgoCD instance:
+Apply this manifest to your ArgoCD instance:
 
 ```bash
-kubectl apply -f dev-application.yaml -n argocd
-kubectl apply -f prod-application.yaml -n argocd
+kubectl apply -f application.yaml -n argocd
 ```
 
 ## Configuration
 
-Update the `destination.server` field in each application to point to your actual cluster endpoints if using external clusters.
+Update the `destination.server` field in the application to point to your actual cluster endpoint if using an external cluster.
+
+## Branch-Based Approach
+
+Each branch contains only its relevant ArgoCD application definition:
+- `main` branch: Contains development application
+- `production` branch: Contains production application
+
+This keeps the configuration consistent with the branch-based environment separation strategy.

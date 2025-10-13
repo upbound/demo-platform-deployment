@@ -88,9 +88,8 @@ git merge main
 
 ```
 .
-├── argocd/                      # ArgoCD Application definitions
-│   ├── dev-application.yaml     # Dev cluster app
-│   └── prod-application.yaml    # Prod cluster app
+├── argocd/                      # ArgoCD Application definition
+│   └── application.yaml         # ArgoCD app for this branch
 ├── base/                        # Base Kubernetes resources
 │   ├── deployment.yaml          # Application deployment
 │   ├── service.yaml             # Application service

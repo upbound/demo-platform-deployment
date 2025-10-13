@@ -10,9 +10,8 @@ This repository contains Kubernetes manifests for deploying the Demo Platform to
 
 ```
 .
-├── argocd/                    # ArgoCD Application definitions
-│   ├── dev-application.yaml   # Dev cluster application
-│   └── prod-application.yaml  # Production cluster application
+├── argocd/                    # ArgoCD Application definition
+│   └── application.yaml       # ArgoCD application for this branch
 ├── base/                      # Base Kubernetes manifests
 │   ├── deployment.yaml
 │   ├── service.yaml
@@ -53,15 +52,18 @@ This repository contains Kubernetes manifests for deploying the Demo Platform to
 
 ### Setting up ArgoCD Applications
 
-Apply the ArgoCD application definitions to your ArgoCD instance:
+Apply the ArgoCD application definition to your ArgoCD instance:
 
 ```bash
-# For dev environment
-kubectl apply -f argocd/dev-application.yaml -n argocd
+# For dev environment (from main branch)
+kubectl apply -f argocd/application.yaml -n argocd
 
-# For production environment
-kubectl apply -f argocd/prod-application.yaml -n argocd
+# For production environment (after creating production branch)
+git checkout production
+kubectl apply -f argocd/application.yaml -n argocd
 ```
+
+**Note:** Each branch contains only its own ArgoCD application definition.
 
 ### Creating the Production Branch
 
