@@ -7,12 +7,12 @@ This directory contains ArgoCD Application manifests for deploying to different 
 ### Development (`dev-application.yaml`)
 - Watches `main` branch
 - Deploys to dev cluster
-- Path: `environments/dev`
+- Path: `.` (repository root)
 
 ### Production (`prod-application.yaml`)
 - Watches `production` branch
 - Deploys to production cluster
-- Path: `environments/prod`
+- Path: `.` (repository root)
 
 ## Installation
 

@@ -7,7 +7,7 @@ on:
       - production
     paths:
       - 'base/**'
-      - 'environments/**'
+      - 'kustomization.yaml'
       - '.github/workflows/validate.yaml'
 
 jobs:
@@ -24,24 +24,18 @@ jobs:
         with:
           version: 'v1.28.0'
       
-      - name: Validate dev environment
+      - name: Validate manifests
         run: |
-          echo "Validating dev environment..."
-          kubectl kustomize environments/dev > /tmp/dev-manifests.yaml
-          kubectl apply --dry-run=client -f /tmp/dev-manifests.yaml
-      
-      - name: Validate prod environment
-        run: |
-          echo "Validating prod environment..."
-          kubectl kustomize environments/prod > /tmp/prod-manifests.yaml
-          kubectl apply --dry-run=client -f /tmp/prod-manifests.yaml
+          echo "Validating manifests on current branch..."
+          kubectl kustomize . > /tmp/manifests.yaml
+          kubectl apply --dry-run=client -f /tmp/manifests.yaml
       
       - name: Check for common issues
         run: |
           echo "Checking for common issues..."
           
           # Check for hardcoded secrets
-          if grep -r "password:" base/ environments/ || grep -r "apiKey:" base/ environments/; then
+          if grep -r "password:" base/ || grep -r "apiKey:" base/; then
             echo "ERROR: Potential hardcoded secrets found!"
             exit 1
           fi
@@ -55,11 +49,11 @@ jobs:
           script: |
             const output = `#### Kubernetes Manifest Validation 🚀
             
-            **Environment Validation Results:**
-            - ✅ Dev environment: Manifests are valid
-            - ✅ Prod environment: Manifests are valid
+            **Validation Results:**
+            - ✅ Manifests on this branch are valid
+            - ✅ Kustomize build completed successfully
             
-            All Kustomize builds completed successfully!`;
+            Changes are ready for deployment!`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,

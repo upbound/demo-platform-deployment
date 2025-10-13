@@ -25,8 +25,8 @@ git checkout -b feature/your-feature-name
 
 Edit the appropriate files:
 - **Base resources**: Edit files in `base/`
-- **Dev-specific config**: Edit `environments/dev/kustomization.yaml`
-- **Prod-specific config**: Edit `environments/prod/kustomization.yaml`
+- **Environment-specific config**: Edit `kustomization.yaml` (at repository root)
+  - This file differs between `main` and `production` branches
 
 ### 3. Test Locally
 
@@ -34,11 +34,13 @@ Always test your changes before committing:
 
 ```bash
 # Build with kustomize
-kubectl kustomize environments/dev
-kubectl kustomize environments/prod
+kubectl kustomize .
 
 # Check for valid YAML
-kubectl kustomize environments/dev | kubectl apply --dry-run=client -f -
+kubectl kustomize . | kubectl apply --dry-run=client -f -
+
+# Or use the validation script
+./scripts/validate-manifests.sh
 ```
 
 ### 4. Commit Your Changes
@@ -108,11 +110,11 @@ Users need to access the application from outside the cluster.
 
 Reviewers should check:
 
-- [ ] Kustomize builds successfully for all environments
+- [ ] Kustomize builds successfully on current branch
 - [ ] YAML syntax is correct
 - [ ] Resource names follow naming conventions
 - [ ] Labels and selectors are consistent
-- [ ] No hardcoded values that should be in overlays
+- [ ] No hardcoded values that should be parameterized
 - [ ] Documentation is updated if needed
 - [ ] Changes are minimal and focused
 - [ ] Commit messages are clear
@@ -142,18 +144,19 @@ Reviewers should check:
 
 ### Environment-Specific Configuration
 
-Use patches in environment overlays:
+Configure in the root `kustomization.yaml`:
 
 ```yaml
-# environments/dev/kustomization.yaml
-patches:
-- target:
-    kind: Deployment
-    name: demo-app
-  patch: |-
-    - op: replace
-      path: /spec/replicas
-      value: 1
+# kustomization.yaml (on main branch for dev)
+replicas:
+- name: demo-app
+  count: 1
+
+namePrefix: dev-
+
+labels:
+- pairs:
+    environment: dev
 ```
 
 ### Secrets

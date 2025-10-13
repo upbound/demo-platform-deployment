@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: demo-app
 
 resources:
-- ../../base
+- base
 
 namePrefix: dev-
 

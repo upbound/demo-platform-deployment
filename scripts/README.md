@@ -17,6 +17,7 @@ Creates the production branch from main and optionally pushes it to the remote r
 - Checks if you're in a git repository
 - Switches to main branch and pulls latest changes
 - Creates production branch from main
+- Updates `kustomization.yaml` with production settings (3 replicas, prod- prefix)
 - Optionally pushes to remote
 - Provides next steps for ArgoCD setup
 
@@ -34,10 +35,9 @@ Validates Kubernetes manifests for all environments.
 ```
 
 **What it does:**
-- Validates dev environment kustomization
-- Validates prod environment kustomization
+- Validates kustomization on current branch
 - Checks for common issues (hardcoded secrets, latest tags)
-- Shows differences between environments
+- Shows configuration details (replicas, etc.)
 - Generates manifest files in /tmp for review
 
 **When to use:**

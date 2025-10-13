@@ -164,9 +164,9 @@ Now that the structure is set up, customize it for your actual application:
    - Update resource limits and requests
    - Add additional resources (ConfigMaps, Secrets, etc.)
 
-2. **Customize environment overlays**:
-   - Update `environments/dev/kustomization.yaml` for dev-specific config
-   - Update `environments/prod/kustomization.yaml` for prod-specific config
+2. **Customize environment configuration**:
+   - Update `kustomization.yaml` on `main` branch for dev-specific config
+   - Update `kustomization.yaml` on `production` branch for prod-specific config
 
 3. **Test changes locally**:
    ```bash
@@ -197,7 +197,6 @@ Example CI pipeline snippet:
 # .github/workflows/deploy.yaml
 - name: Update image tag
   run: |
-    cd environments/dev
     kustomize edit set image nginx=myapp:${{ github.sha }}
     git config user.name "GitHub Actions"
     git config user.email "actions@github.com"

@@ -63,11 +63,37 @@ echo ""
 echo "Creating production branch from main..."
 git checkout -b production
 
+# Update kustomization.yaml for production settings
+echo ""
+echo "Updating kustomization.yaml for production environment..."
+cat > kustomization.yaml << 'EOF'
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: demo-app
+
+resources:
+- base
+
+namePrefix: prod-
+
+labels:
+- pairs:
+    environment: production
+
+replicas:
+- name: demo-app
+  count: 3
+EOF
+
+git add kustomization.yaml
+git commit -m "Update kustomization for production environment"
+
 echo ""
 echo "Branch created successfully!"
 echo ""
-echo "Review the changes before pushing:"
-git log --oneline -5
+echo "Review the changes:"
+git log --oneline -2
 
 echo ""
 read -p "Push production branch to remote? (Y/n): " -n 1 -r

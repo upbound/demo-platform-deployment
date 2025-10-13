@@ -18,15 +18,15 @@ This repository contains Kubernetes manifests for deploying the Demo Platform to
 │   ├── service.yaml
 │   ├── namespace.yaml
 │   └── kustomization.yaml
-├── environments/              # Environment-specific overlays
-│   ├── dev/                   # Development environment
-│   │   └── kustomization.yaml
-│   └── prod/                  # Production environment
-│       └── kustomization.yaml
+├── kustomization.yaml         # Environment-specific overlay (differs per branch)
 └── scripts/                   # Utility scripts
     ├── create-production-branch.sh
     └── validate-manifests.sh
 ```
+
+**Note:** The `kustomization.yaml` file at the root differs between branches:
+- `main` branch: Configured for dev (1 replica, `dev-` prefix)
+- `production` branch: Configured for production (3 replicas, `prod-` prefix)
 
 ## GitOps Workflow
 
@@ -81,12 +81,11 @@ You can test the manifests locally using kustomize:
 # Use the validation script (recommended)
 ./scripts/validate-manifests.sh
 
-# Or manually test environments
-kubectl kustomize environments/dev
-kubectl kustomize environments/prod
+# Or manually test the current branch
+kubectl kustomize .
 
 # Apply to a cluster (for testing)
-kubectl apply -k environments/dev
+kubectl apply -k .
 ```
 
 ## Making Changes
@@ -94,8 +93,8 @@ kubectl apply -k environments/dev
 ### Development Environment Changes
 
 1. Create a feature branch from `main`
-2. Make your changes to files in `base/` or `environments/dev/`
-3. Test locally with `kubectl kustomize environments/dev`
+2. Make your changes to files in `base/` or `kustomization.yaml`
+3. Test locally with `./scripts/validate-manifests.sh`
 4. Commit and push your changes
 5. Create a pull request to `main`
 6. Once merged, ArgoCD will automatically sync to dev cluster
@@ -103,19 +102,17 @@ kubectl apply -k environments/dev
 ### Production Environment Changes
 
 1. After changes are validated in dev, create a PR from `main` to `production`
-2. Review and merge the PR
+2. Review and merge the PR (the `kustomization.yaml` differs between branches)
 3. ArgoCD will automatically sync to production cluster
 
 ## Environment Configuration
 
-### Development
-- Location: `environments/dev/`
+### Development (`main` branch)
 - Replicas: 1
 - Name prefix: `dev-`
 - Labels: `environment: dev`
 
-### Production
-- Location: `environments/prod/`
+### Production (`production` branch)
 - Replicas: 3
 - Name prefix: `prod-`
 - Labels: `environment: production`

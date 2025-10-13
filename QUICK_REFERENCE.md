@@ -7,27 +7,27 @@ Quick commands and references for working with this GitOps repository.
 ### Validate Manifests
 
 ```bash
-# Validate dev environment
-kubectl kustomize environments/dev
+# Validate current branch
+kubectl kustomize .
 
-# Validate prod environment
-kubectl kustomize environments/prod
+# Use validation script
+./scripts/validate-manifests.sh
 
 # Save to file
-kubectl kustomize environments/dev > dev-manifests.yaml
+kubectl kustomize . > manifests.yaml
 ```
 
 ### Test Before Committing
 
 ```bash
 # Dry-run validation (requires cluster access)
-kubectl kustomize environments/dev | kubectl apply --dry-run=client -f -
+kubectl kustomize . | kubectl apply --dry-run=client -f -
 
 # Check YAML syntax
-kubectl kustomize environments/dev | yamllint -
+kubectl kustomize . | yamllint -
 
 # View specific resource
-kubectl kustomize environments/dev | grep -A 20 "kind: Deployment"
+kubectl kustomize . | grep -A 20 "kind: Deployment"
 ```
 
 ### ArgoCD Operations
@@ -79,8 +79,7 @@ git merge main
 | What | Where |
 |------|-------|
 | Base manifests | `base/` |
-| Dev config | `environments/dev/` |
-| Prod config | `environments/prod/` |
+| Environment config | `kustomization.yaml` (differs per branch) |
 | ArgoCD apps | `argocd/` |
 | Setup guide | `SETUP.md` |
 | Contributing guide | `CONTRIBUTING.md` |
@@ -97,59 +96,47 @@ git merge main
 │   ├── service.yaml             # Application service
 │   ├── namespace.yaml           # Namespace definition
 │   └── kustomization.yaml       # Base kustomization
-└── environments/                # Environment overlays
-    ├── dev/                     # Development environment
-    │   └── kustomization.yaml   # Dev-specific config
-    └── prod/                    # Production environment
-        └── kustomization.yaml   # Prod-specific config
+├── kustomization.yaml           # Environment overlay (differs per branch)
+└── scripts/                     # Utility scripts
+    ├── validate-manifests.sh
+    └── create-production-branch.sh
 ```
 
-## Kustomize Patches
+## Kustomize Configuration
 
-### Patch Replicas
+### Set Replicas
 
 ```yaml
-# In environments/dev/kustomization.yaml
+# In kustomization.yaml
 replicas:
 - name: demo-app
-  count: 1
+  count: 1  # for dev, 3 for prod
 ```
 
-### Patch Image
+### Set Image
 
 ```yaml
-# In environments/dev/kustomization.yaml
+# In kustomization.yaml
 images:
 - name: nginx
   newName: nginx
   newTag: 1.22
 ```
 
-### Patch with Strategic Merge
+### Apply Labels
 
 ```yaml
-# In environments/dev/kustomization.yaml
-patches:
-- path: deployment-patch.yaml
-  target:
-    kind: Deployment
-    name: demo-app
+# In kustomization.yaml
+labels:
+- pairs:
+    environment: dev
 ```
 
-### Patch with JSON
+### Set Name Prefix
 
 ```yaml
-# In environments/dev/kustomization.yaml
-patches:
-- target:
-    kind: Deployment
-    name: demo-app
-  patch: |-
-    - op: add
-      path: /spec/template/spec/containers/0/env
-      value:
-      - name: ENVIRONMENT
-        value: development
+# In kustomization.yaml
+namePrefix: dev-  # or prod- for production
 ```
 
 ## Environment Variables

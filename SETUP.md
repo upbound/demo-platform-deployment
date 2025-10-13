@@ -32,7 +32,7 @@ kubectl apply -f argocd/dev-application.yaml -n argocd
 
 This application will:
 - Watch the `main` branch
-- Deploy manifests from `environments/dev/`
+- Deploy manifests from the repository root
 - Automatically sync changes
 
 #### For Production Cluster
@@ -43,7 +43,7 @@ kubectl apply -f argocd/prod-application.yaml -n argocd
 
 This application will:
 - Watch the `production` branch
-- Deploy manifests from `environments/prod/`
+- Deploy manifests from the repository root
 - Automatically sync changes
 
 ### 3. Update ArgoCD Application Configuration (if needed)
@@ -83,8 +83,8 @@ Protect the `production` branch with:
 ### Deploying to Development
 
 1. Create a feature branch from `main`
-2. Make changes to `base/` or `environments/dev/`
-3. Test locally: `kubectl kustomize environments/dev`
+2. Make changes to `base/` or `kustomization.yaml`
+3. Test locally: `./scripts/validate-manifests.sh`
 4. Create PR to `main`
 5. After merge, ArgoCD syncs to dev cluster automatically
 
@@ -141,11 +141,11 @@ kubectl get deployments -n demo-app -l environment=production
 Test locally before committing:
 
 ```bash
-# Test dev
-kubectl kustomize environments/dev
+# Test current branch
+kubectl kustomize .
 
-# Test prod
-kubectl kustomize environments/prod
+# Or use validation script
+./scripts/validate-manifests.sh
 ```
 
 ### Check ArgoCD Logs
