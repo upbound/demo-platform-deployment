@@ -1,7 +1,0 @@
-apiVersion: platform.example.io/v1alpha1
-kind: EdgeRoute
-metadata:
-  name: kubecon-countdown
-spec:
-  serviceName: kubecon-countdown
-  servicePort: 80
