@@ -5,7 +5,7 @@ metadata:
 spec:
   image:
     repository: us-central1-docker.pkg.dev/spaces-playground/demo-platform/countdown-website
-    tag: v1.0.1
+    tag: v1.0.2
   containerPort: 8080
   servicePort: 80
   replicas: 2
