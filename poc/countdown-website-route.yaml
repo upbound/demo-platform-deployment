@@ -1,7 +1,0 @@
-apiVersion: platform.example.io/v1alpha1
-kind: EdgeRoute
-metadata:
-  name: countdown-website
-spec:
-  serviceName: countdown-website
-  servicePort: 80
