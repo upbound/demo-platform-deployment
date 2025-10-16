@@ -6,7 +6,7 @@ metadata:
 spec:
   image:
     repository: us-central1-docker.pkg.dev/spaces-playground/demo-platform/hello-world-app
-    tag: v1.0.1
+    tag: v1.0.2
   containerPort: 8080
   replicas: 2
   resources:
