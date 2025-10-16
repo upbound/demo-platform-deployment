@@ -1,0 +1,22 @@
+apiVersion: platform.example.io/v1alpha1
+kind: AppFrontend
+metadata:
+  name: hello-world-frontend
+  namespace: poc
+spec:
+  image:
+    repository: us-central1-docker.pkg.dev/spaces-playground/demo-platform/hello-world-app
+    tag: v1.0.0
+  containerPort: 80
+  replicas: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  healthCheck:
+    path: /
+    port: 80
+    initialDelaySeconds: 10
