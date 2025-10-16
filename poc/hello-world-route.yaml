@@ -1,9 +1,0 @@
-apiVersion: platform.example.io/v1alpha1
-kind: EdgeRoute
-metadata:
-  name: hello-world-route
-  namespace: poc
-spec:
-  serviceName: hello-world-frontend
-  servicePort: 8080
-  ingressClass: nginx
