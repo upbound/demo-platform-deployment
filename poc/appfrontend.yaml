@@ -6,7 +6,7 @@ spec:
   containerPort: 8080
   image:
     repository: us-central1-docker.pkg.dev/spaces-playground/demo-platform/kubecon-countdown
-    tag: v1.0.0
+    tag: v1.0.1
   replicas: 1
   servicePort: 80
   healthCheck:
