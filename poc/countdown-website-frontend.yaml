@@ -5,13 +5,13 @@ metadata:
 spec:
   image:
     repository: us-central1-docker.pkg.dev/spaces-playground/demo-platform/countdown-website
-    tag: v1.0.0
-  containerPort: 80
+    tag: v1.0.1
+  containerPort: 8080
   servicePort: 80
   replicas: 2
   healthCheck:
     path: /
-    port: 80
+    port: 8080
     initialDelaySeconds: 5
   resources:
     requests:
