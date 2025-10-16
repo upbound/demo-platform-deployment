@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: test-config
-  namespace: poc
-data:
-  message: "Hello from ArgoCD!"
-  deployed-at: "$(date)"
