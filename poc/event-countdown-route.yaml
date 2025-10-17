@@ -1,0 +1,7 @@
+apiVersion: platform.example.io/v1alpha1
+kind: EdgeRoute
+metadata:
+  name: event-countdown
+spec:
+  serviceName: event-countdown
+  servicePort: 80
