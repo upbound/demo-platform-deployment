@@ -1,0 +1,22 @@
+apiVersion: platform.example.io/v1alpha1
+kind: AppFrontend
+metadata:
+  name: event-countdown
+spec:
+  image:
+    repository: us-central1-docker.pkg.dev/spaces-playground/demo-platform/event-countdown
+    tag: v1.0.0
+  containerPort: 8080
+  servicePort: 80
+  replicas: 1
+  healthCheck:
+    path: /health
+    port: 8080
+    initialDelaySeconds: 10
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
